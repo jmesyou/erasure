@@ -1,22 +1,39 @@
 \documentclass[10pt,letter]{article}
 
+\usepackage{titling}
+\setlength{\droptitle}{-10em}
+
+\usepackage{geometry}
+\geometry{margin=1.5in}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	urlcolor=blue,	
+}
 %opening
-\title{An Intermediary Java Bytecode Generator for Whitespace implemented in Scala}
+\title{A Java Bytecode Generator for the Whitespace Programming Language Implemented in Clojure}
 \author{James You \texttt{001419572},
 	\\ Zichen Jiang \texttt{001320889}}
 
 \begin{document}
 	
 	\maketitle
-	
 	\begin{abstract}
-		
+		We propose a Clojure-based java bytecode compiler for the esoteric programming language \href{https://web.archive.org/web/20151101230744/http://compsoc.dur.ac.uk/whitespace/tutorial.html}{Whitespace}. Two artifacts are intended to be generated from the compiler: a user readable intermediate representation and a Java virtual machine \texttt{.class} file. We also intend to implement specific program optimizations to reduce redundancy and inefficiency. A report will discuss challenges and details of the project at its conclusion.
 	\end{abstract}
 
-	\section{Outline}
+	\section{Areas of Focus}
+	
+		\subsection{Intermediate Code Generation}
+			The domain of the Java virtual machine was specifically chosen for its widely accessible code generation tools and platform compatibility. Since Whitespace is a stack-oriented programming language, all operations which exist in Whitespace must also have an equivalent set of stack instructions in the Java virtual machine.
+		\subsection{Program Optimization}
+			Because of the stack-oriented nature of Whitespace, we know from previous work in compiler optimization it is possible to apply well developed optimization techniques such as \href{https://dl.acm.org/citation.cfm?id=365000}{Peephole optimization} to either the Whitespace program itself or the generated Java bytecode.
+		\subsection{Functional Languages for Compiler Construction}
+			Using a functional language for the implementation of the bytecode compiler will greatly simplify the areas of interest given above. Functional features such as pattern matching can be used for both code generation and optimization.
 	
 	\section{Implementation}
-	
+		It is intended the compiler infrastructure be implemented in \href{https://clojure.org/index}{Clojure}, a functional language with allowance for side effects. The generated class files will make use of the Apache Software Foundation's \href{https://commons.apache.org/proper/commons-bcel/index.html}{ByteCode Engineering Library} and the intermediate code representation will be provided in \href{http://jasmin.sourceforge.net/}{Jasmin}, which itself is compilable to bytecode as well.
 	\section{Relevance}
-	
+		Whitespace is considered to be an \textit{esoteric} programming language, meant to explore the boundaries of programming languages. We hope to provide an accessible platform generic Whitespace compiler for the programming languages community in spirit of esolangs and if possible, have the project incorporated into a public collection of \href{https://github.com/hostilefork/whitespacers/}{Whitespacers} (Whitespace compilers).
 \end{document}
