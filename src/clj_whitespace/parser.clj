@@ -1,4 +1,5 @@
-(import clojure)
+(ns (ns clj-whitespace.parser
+  (:gen-class)))
 
 (def class-name)
 
