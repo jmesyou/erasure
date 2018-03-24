@@ -9,7 +9,9 @@
 (def parse-io-cmds)
 (def parse-parameter)
 
-(defn read-tokens-from-file [f] (re-seq #"[ \t\n]" (slurp f)))
+(defn tokenize-string [s] (re-seq #"[ \t\n]" s))
+
+(defn tokenize-file [f] (tokenize-string (slurp f)))
 
 (defn parse [stream]
     (match [stream]
@@ -74,3 +76,8 @@
         (def xs' (drop 1 xs))
         [values xs']))
 
+(defn parse-string [s] 
+    (let [[tokens] (tokenize-string s)] (parse tokens)))
+
+(defn parse-file [f] 
+    (let [[tokens] (tokenize-file f)] (parse tokens)))
