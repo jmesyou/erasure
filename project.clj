@@ -5,6 +5,7 @@
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.match "0.3.0-alpha5"]
+                 [jline "2.11"]
                  ]
   :main ^:skip-aot clj-whitespace.core
   :java-source-paths ["src/" "test/"]

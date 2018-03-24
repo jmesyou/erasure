@@ -1,11 +1,14 @@
 (ns clj-whitespace.core
   (:require [clj-whitespace.parser :as parser])
+  (:import [jline.console ConsoleReader])
   (:gen-class))
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (def test1 '(" " " " " " "\t" " " "\n" " " "\n" "\t" "\n" "\n" "\n"))
-  (prn test1)
-  (println (parser/parse test1)))
+  (print "Enter a keystroke: ")
+  (flush)
+  (let [cr (ConsoleReader.)
+        keyint (.readCharacter cr)]
+    (println (format "Got %d ('%c')!" keyint (char keyint)))))
 
