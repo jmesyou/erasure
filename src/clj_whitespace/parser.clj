@@ -63,8 +63,8 @@
 
 (defn parse-io-cmds [stream] 
     (match [stream]
-        [([" " " " & xs] :seq)] (cons "DISPLAY-CHAR" (parse xs))
-        [([" " "\t" & xs] :seq)] (cons "DISPLAY-INT" (parse xs))
+        [([" " " " & xs] :seq)] (cons "PRINT-CHAR" (parse xs))
+        [([" " "\t" & xs] :seq)] (cons "PRINT-INT" (parse xs))
         [(["\t" " " & xs] :seq)] (cons "READ-CHAR" (parse xs))
         [(["\t" "\t" & xs] :seq)] (cons "READ-INT" (parse xs))
         :else (throw (Exception. "unexpected newline encountered while parsing io op"))))
