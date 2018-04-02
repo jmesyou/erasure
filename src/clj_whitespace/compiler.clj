@@ -3,10 +3,12 @@
     (:require [clj-whitespace.parser :as parser])
     (:gen-class))
 
-(defn compile [cmds program labels]
+(defn compile-program [cmds program labels]
     (match [cmds]
-        [(['("LABEL" l) & xs] :seq)] (recur (xs) (program) (conj labels {l (lazy-seq xs)}))
-        [([x & xs] :seq)] (recur (xs) (conj x program) (labels))
+        [([([:label l] :as x) & xs] :seq)] (if (contains? labels l) 
+                                        ((throw (Exception. "label already present in global table")))
+                                        (recur xs (conj program x) (conj labels {l xs})))
+        [([x & xs] :seq)] (recur xs (conj program x) labels)
         :else [program labels]
         ))
 

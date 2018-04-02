@@ -1,5 +1,8 @@
 (ns clj-whitespace.core
   (:require [clj-whitespace.parser :as parser])
+  (:require [clj-whitespace.compiler :as compiler])
+  (:require [clj-whitespace.programs :as programs])
+  (:require [clj-whitespace.runtime :as runtime])
   (:import [jline.console ConsoleReader])
   (:gen-class))
 
