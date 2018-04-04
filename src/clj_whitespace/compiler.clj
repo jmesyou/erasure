@@ -3,17 +3,22 @@
     (:require [clj-whitespace.parser :as parser])
     (:gen-class))
 
-(defn compile-program [cmds prgm labels]
+(defn compile-helper [cmds prgm labels pc]
     (if (empty? cmds)
         [prgm labels]
-        (let [[n-cmds n-prgm n-labels] 
+        (let [[n-cmds n-prgm n-labels n-pc] 
               (match [cmds]
-                [([[:push a] :pop & xs] :seq)] [xs prgm labels]
-                [([[:push a] [:push b] :swap & xs] :seq)] [xs (concat prgm [[:push b] [:push a]]) labels]
+                [([[:push a] :pop & xs] :seq)] [xs prgm labels pc]
+                [([[:push a] [:push b] :swap & xs] :seq)] [xs (concat prgm [[:push b] [:push a]]) labels (+ pc 2)]
                 [([([:label l] :as x) & xs] :seq)] (if (contains? labels l) 
                                                        (throw (Exception. "label already present in global table"))
-                                                       [xs (conj prgm x) (conj labels {l xs})])
-                [([x & xs] :seq)] [xs (conj prgm x) labels]
-                [([:end] :seq)] [(list) (conj prgm :end) labels])]
-             (recur n-cmds n-prgm n-labels))))
+                                                       [xs prgm (conj labels {l pc}) pc])
+                [([x & xs] :seq)] [xs (conj prgm x) labels (inc pc)]
+                [([:end] :seq)] [(list) (conj prgm :end) labels (-1)])]
+             (recur n-cmds n-prgm n-labels n-pc))))
 
+(defn compile-tokens [cmds] (compile-helper cmds [] {} 0))
+
+(defn compile-program [s & {:keys [mode] :or {mode :string}}] 
+    (let [tokens (parser/parse s :mode mode)] 
+        (compile-tokens tokens)))
