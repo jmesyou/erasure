@@ -3,7 +3,7 @@
   (:require [clj-whitespace.compiler :as compiler])
   (:require [clj-whitespace.programs :as programs])
   (:require [clj-whitespace.runtime :as runtime])
-  (:import [jline.console ConsoleReader])
+  (:require [clojure.tools.cli :refer [parse-opts]])
   (:gen-class))
 
 (defn -main
@@ -11,7 +11,4 @@
   [& args]
   (print "Enter a keystroke: ")
   (flush)
-  (let [cr (ConsoleReader.)
-        keyint (.readCharacter cr)]
-    (println (format "Got %d ('%c')!" keyint (char keyint)))))
 
