@@ -19,6 +19,8 @@
 
 (defn compile-tokens [cmds] (compile-helper cmds [] {} 0))
 
-(defn compile-program [s & {:keys [mode] :or {mode :string}}] 
+(defn compile-program [s & {:keys [mode] :or {mode :string}}]
+    (case mode
+        :commands (compile-tokens s)
     (let [tokens (parser/parse s :mode mode)] 
-        (compile-tokens tokens)))
+        (compile-tokens tokens))))

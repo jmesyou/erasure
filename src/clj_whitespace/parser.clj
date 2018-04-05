@@ -58,17 +58,17 @@
     (match [stream]
         [([:s :s & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:label val] (parse-tokens rest)))
         [([:s :t & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:call val] (parse-tokens rest)))
-        [([:s :n & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:jump val] (parse-tokens rest)))
-        [([:t :s & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:jump-if-zero val] (parse-tokens rest)))
-        [([:t :t & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:jump-if-neg val] (parse-tokens rest)))
+        [([:s :n & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:jmp val] (parse-tokens rest)))
+        [([:t :s & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:jz val] (parse-tokens rest)))
+        [([:t :t & xs] :seq)] (let [[val rest] (parse-label xs)] (cons [:jn val] (parse-tokens rest)))
         [([:t :n & xs] :seq)] (cons :return (parse-tokens xs))
         [([:n :n & xs] :seq)] (cons :end (sequence nil))
         :else (throw (Exception. "unexpected token encountered with parsing flow control op"))))
 
 (defn parse-io-tokens [stream] 
     (match [stream]
-        [([:s :s & xs] :seq)] (cons :print-char (parse-tokens xs))
-        [([:s :t & xs] :seq)] (cons :print-int (parse-tokens xs))
+        [([:s :s & xs] :seq)] (cons :printc (parse-tokens xs))
+        [([:s :t & xs] :seq)] (cons :printi (parse-tokens xs))
         [([:t :s & xs] :seq)] (cons :read-char (parse-tokens xs))
         [([:t :t & xs] :seq)] (cons :read-int (parse-tokens xs))
         :else (throw (Exception. "unexpected newline encountered while parsing io op"))))
@@ -82,7 +82,10 @@
 
 (defn parse-label [stream]
     (let [[x xs] (split-with (partial not= :n) stream)] 
-        (if (< (count x) 1) (throw (Exception. "malformed label before linefeed")))
+        (if (< (count x) 1) (do
+                            (println x)
+                            (println xs) 
+                            (throw (Exception. "malformed label before linefeed"))))
         (def values (map (fn [chr] (if (= chr :s) "0"  "1")) x))
         (def xs' (drop 1 xs))
         [(Long/parseLong (apply str values) 2) xs']))
