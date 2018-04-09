@@ -1,15 +1,27 @@
 # Clojure Whitespace Compiler
 
-FIXME: description
+`clj-whitespace` is a Whitespace compiler and runtime which produces an intermediate code representation in 
+Clojure. 
 
+This compiler was built for the term project of **COMPSCI 4TB3** at _McMaster University_
 ## Installation
 
-Download from http://example.com/FIXME.
+### Build from Source
+
+Install [Leiningen](https://leiningen.org/)
+
+From project root:
+```
+$ lein compile
+$ lein uberjar
+```
+### Standalone Jar
+Download from https://github.com/JacksYou/clj-whitespace/blob/master/target/uberjar/clj-whitespace-1.0-standalone.jar.
 
 ## Usage
 
 ```
-$ java -jar clj-whitespace-0.1.0-standalone.jar [options] file
+$ java -jar clj-whitespace-1.0-standalone.jar [options] file
 ```
 
 ## Options
@@ -22,15 +34,8 @@ $ java -jar clj-whitespace-0.1.0-standalone.jar [options] file
 
 ## Examples
 
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+There are two sample programs located in `resources`. `helloworld.ws` is purely Whitespace
+source while `count.c` is a Whitespace program embedded into C source which mirrors functionality.
 
 ## License
 
