@@ -28,4 +28,5 @@
  :printc
  [:push 10]
  :printc
+ :pop
  :end)

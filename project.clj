@@ -1,4 +1,4 @@
-(defproject clj-whitespace "0.1.0-SNAPSHOT"
+(defproject clj-whitespace "1.0"
   :description "A Whitespace compiler in Clojure"
   :url "https://github.com/jacksyou/clj-whitespace"
   :license {:name "MIT Public License"
@@ -7,7 +7,8 @@
                  [org.clojure/core.match "0.3.0-alpha5"]
                  [org.clojure/tools.cli "0.3.5"]
                  ]
-  :main ^:skip-aot clj-whitespace.core
+  :aot  [clj-whitespace.core]
+  :main clj-whitespace.core
   :java-source-paths ["src/" "test/"]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
