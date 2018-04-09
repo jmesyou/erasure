@@ -6,6 +6,11 @@ Clojure.
 This compiler was built for the term project of **COMPSCI 4TB3** at _McMaster University_
 ## Installation
 
+### Dependencies
+
+* [Java](https://www.java.com/en/)
+* [Clojure](https://clojure.org/)
+
 ### Build from Source
 
 Install [Leiningen](https://leiningen.org/)
