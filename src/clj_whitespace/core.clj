@@ -1,7 +1,6 @@
 (ns clj-whitespace.core
   (:require [clj-whitespace.parser :as parser]
             [clj-whitespace.compiler :as compiler]
-            [clj-whitespace.programs :as programs]
             [clj-whitespace.runtime :as runtime]
             [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]])
