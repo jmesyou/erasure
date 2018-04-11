@@ -4,7 +4,7 @@
   (:gen-class))
 
 (defn compile-helper [cmds prgm labels pc]
-  ""
+  "This is a helper function with full parameters for compilation"
   (if (empty? cmds)
     [prgm labels]
     (let [[n-cmds n-prgm n-labels n-pc] 

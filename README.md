@@ -9,7 +9,7 @@ This compiler was built for the term project of **COMPSCI 4TB3** at _McMaster Un
 ### Dependencies
 
 * [Java](https://www.java.com/en/)
-* [Clojure](https://clojure.org/)
+* [Clojure](https://clojure.org/) (If building from source)
 
 ### Build from Source
 
@@ -37,10 +37,36 @@ $ java -jar clj-whitespace-1.0-standalone.jar [options] file
 -h, --help
 ```
 
+## Test Cases
+
+Test modules exist in `test/clj_whitespace`, they are minimal given the time constraints of the project.
+However, they are fully extensible by any user (provided they know Clojure).
+
+Tests can be executed using:
+
+```
+$ lein test
+```
+
 ## Examples
 
 There are two sample programs located in `resources`. `helloworld.ws` is purely Whitespace
 source while `count.c` is a Whitespace program embedded into C source which mirrors functionality.
+
+for example, to run `count.c`:
+
+from standalone jar:
+
+```
+$ java -jar target/uberjar/clj-whitespace-1.0-standalone.jar resources/count.c
+```
+
+from lein:
+
+```
+$ lein repl
+clj-whitespace.core=> (-main "resources/count.c")
+```
 
 ## License
 

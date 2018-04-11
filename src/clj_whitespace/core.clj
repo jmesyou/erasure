@@ -27,6 +27,7 @@
         (string/join \newline errors)))
 
 (defn validate-args [args]
+  "We validate arguments for functionality in the main method."
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
       (:help options) {:exit-message (usage summary) :ok? true}

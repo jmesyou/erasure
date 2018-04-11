@@ -22,7 +22,7 @@
         [:load] (let [addr (first stack)] [(inc pc) (conj (next stack) (get table addr 0)) table labels call-stack])
         [:printc] (do (print (char (first stack))) (flush) [(inc pc) (next stack) table labels call-stack])
         [:printi] (do (print (first stack)) (flush) [(inc pc) (next stack) table labels call-stack])
-        [(:or :read-char :read-int)] (let [keyint (Integer/parseInt (read-line)) addr (first stack)] [(inc pc) (next stack) (conj! table {addr keyint}) labels call-stack])
+        [(:or :readc :readi)] (let [keyint (Integer/parseInt (read-line)) addr (first stack)] [(inc pc) (next stack) (conj! table {addr keyint}) labels call-stack])
         [[:call l]] [(get labels l (- 1)) stack table labels (conj call-stack (inc pc))]
         [[:jmp l]] [(get labels l (- 1)) stack table labels call-stack]
         [[:jz l]] (if (== (first stack) 0) [(get labels l (- 1)) (next stack) table labels call-stack] [(inc pc) (next stack) table labels call-stack])
