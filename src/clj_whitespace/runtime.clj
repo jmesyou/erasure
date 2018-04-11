@@ -32,7 +32,11 @@
         :else (throw (Exception. "[runtime/routine] unexpected or malformed op!")))]
         (recur prgm n-stack n-table n-labels n-call-stack n-pc))))
 
-(defn main-routine [prgm labels] (routine prgm '() (transient {}) labels '() 0))
+(defn main-routine [prgm labels]
+  "This is a main routine in runtime.
+  A main routine is considered the master routine from which
+  all subroutines are called."
+  (routine prgm '() (transient {}) labels '() 0))
 
 (defn exec [s & {:keys [mode] :or {mode :string}}] 
   (let 
