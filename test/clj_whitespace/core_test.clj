@@ -9,4 +9,3 @@
 (deftest count-to-ten-test
   (testing "Program should output: 1 to 10`"
     (-main "resources/count.c")))
-
