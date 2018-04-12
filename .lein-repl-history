@@ -1,0 +1,4 @@
+exit
+clj-whitespace.core=> (-main "resources/count.c")
+clj-whitespace.core=> (-main "resources/fib.ws")
+exit
