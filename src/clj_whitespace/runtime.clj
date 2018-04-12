@@ -4,6 +4,9 @@
   (:gen-class))
 
 (defn routine [prgm stack table labels call-stack pc]
+  "This function is a helper function for a main rountine.
+  It keeps all the variables for the routine as a state, whereas
+  a main routine always start with empty values, subroutines do not."
   (if (== pc (- 1))
       (do ())
       (let 
