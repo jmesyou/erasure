@@ -1,6 +1,6 @@
 (ns clj-whitespace.compiler
-  (:require [clojure.core.match :refer [match]])
-  (:require [clj-whitespace.parser :as parser])
+  (:require [clojure.core.match :refer [match]]
+            [clj-whitespace.parser :as parser])
   (:gen-class))
 
 (defn compile-helper [cmds prgm labels pc]

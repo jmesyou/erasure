@@ -1,6 +1,7 @@
 (ns clj-whitespace.runtime
   (:require [clojure.core.match :refer [match]])
   (:require [clj-whitespace.compiler :as compiler])
+  (:import (org.apache.bcel.generic))
   (:gen-class))
 
 (defn routine [prgm stack table labels call-stack pc]
