@@ -18,9 +18,14 @@
 
 (defn -main [& args]
   "This function is the main class"
+  (def class-name "HelloWorld")
+    (def class-gen (new ClassGen class-name "java.lang.Object" "<generated>" (bit-or Const/ACC_PUBLIC Const/ACC_SUPER) nil))
   (def instruction-list (new InstructionList))
   (def constant-pool (new ConstantPoolGen))
-  (def class-gen (new ClassGen "HelloWorld" "java.lang.Object" "<generated>" (bit-or Const/ACC_PUBLIC Const/ACC_SUPER) nil))
+  (def factory (new InstructionFactory class-name))
+
+  (instruction-list/append (new PUSH constant-pool "Hello World"))
+
   (def method-gen 
     (new MethodGen 
       (bit-or Const/ACC_STATIC Const/ACC_PUBLIC)
@@ -28,7 +33,7 @@
       (into-array Type [(new ArrayType Type/STRING 1)])
       (into-array String ["argv"])
       "main"
-      "Helloworld"
+      class-name
       instruction-list
       constant-pool))
   )
