@@ -1,4 +1,4 @@
-(ns clj-whitespace.debug
+(ns clj-whitespace.bytecoder
     (:require [clj-whitespace.parser :as parser]
               [clj-whitespace.compiler :as compiler]
               [clj-whitespace.runtime :as runtime]
@@ -10,8 +10,11 @@
         MethodGen
         ConstantPoolGen
         InstructionList
+        InstructionFactory
+        InstructionConstants
         Type
-        ArrayType)
+        ArrayType
+        PUSH)
       (org.apache.bcel Const))
     (:gen-class))
 
@@ -19,14 +22,16 @@
 (defn -main [& args]
   "This function is the main class"
   (def class-name "HelloWorld")
-  (def class-gen (new ClassGen class-name "java.lang.Object" "<generated>" (bit-or Const/ACC_PUBLIC Const/ACC_SUPER) nil))
+  (def class-gen (new ClassGen class-name "java.lang.Object" "HelloWorld.class" (bit-or Const/ACC_PUBLIC Const/ACC_SUPER) nil))
+  ;(.setMajor class-gen 52)
+  ;(.setMinor class-gen 0)
   (def instruction-list (new InstructionList))
-  (def constant-pool (new ConstantPoolGen))
+  (def constant-pool (.getConstantPool class-gen))
   (def factory (new InstructionFactory class-gen))
 
-  (instruction-list/append (new PUSH constant-pool "Hello World"))
-  (instruction-list/append (new PUSH constant-pool 4711))
-  (instruction-list/append (factory/createPrintln "Hello World"))
+  ; (.append instruction-list (new PUSH constant-pool 4711))
+  (.append instruction-list (.createPrintln factory "Hello World!"))
+  (.append instruction-list InstructionConstants/RETURN)
 
   (def method-gen 
     (new MethodGen 
@@ -38,4 +43,11 @@
       class-name
       instruction-list
       constant-pool))
+
+  (.setMaxStack method-gen)
+  (.addMethod class-gen (.getMethod method-gen))
+  (.dispose instruction-list)
+  (.addEmptyConstructor class-gen Const/ACC_PUBLIC)
+  (.dump (.getJavaClass class-gen) "HelloWorld.class")
+
   )

@@ -14,8 +14,8 @@
         [([:swap :swap & xs] :seq)] [xs prgm labels pc]
         [([[:push a] [:push b] :swap & xs] :seq)] [xs (concat prgm [[:push b] [:push a]]) labels (+ pc 2)]
         [([([:label l] :as x) & xs] :seq)] (if (contains? labels l) 
-                                              (throw (Exception. "label already present in global table"))
-                                              [xs prgm (conj labels {l pc}) pc])
+                                              (throw (new Exception "label already present in global table"))
+                                            [xs prgm (conj labels {l pc}) pc])
         [([x & xs] :seq)] [xs (conj prgm x) labels (inc pc)]
         [([:end] :seq)] [(list) (conj prgm :end) labels (-1)])]
       (recur n-cmds n-prgm n-labels n-pc))))
