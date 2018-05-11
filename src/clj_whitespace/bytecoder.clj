@@ -30,7 +30,16 @@
   (def factory (new InstructionFactory class-gen))
 
   ; (.append instruction-list (new PUSH constant-pool 4711))
-  (.append instruction-list (.createPrintln factory "Hello World!"))
+  (.append instruction-list (.createNew factory "java.util.TreeMap"))
+  (.append instruction-list (new PUSH constant-pool "Hello World"))
+  (.append instruction-list 
+    (.createInvoke factory 
+      "java.lang.System"
+      "print"
+      Type/VOID
+      (into-array Type [Type/STRING])
+      Const/INVOKEVIRTUAL
+      ))
   (.append instruction-list InstructionConstants/RETURN)
 
   (def method-gen 
