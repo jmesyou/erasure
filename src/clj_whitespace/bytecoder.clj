@@ -21,6 +21,8 @@
       (org.apache.bcel Const))
     (:gen-class))
 
+(def heap-type-string "java.util.TreeMap")
+(def heap-type (new ObjectType heap-type))
 
 (defn -main [& args]
   "This function is the main class"
@@ -47,19 +49,7 @@
   ;(.append instruction-list (new PUSH constant-pool Type/STRING))
   ;(.append instruction-list (new PUSH constant-pool (new ObjectType "java.lang.Long")))
   ;(.append instruction-list (new PUSH constant-pool (new ObjectType "java.lang.Integer")))
-  (.append instruction-list (.createNew factory "java.util.TreeMap"))
-  (.append instruction-list InstructionConstants/DUP)
-  (.append instruction-list 
-    (.createInvoke factory
-      "java.util.TreeMap"
-      "<init>"
-      Type/VOID
-      Type/NO_ARGS
-      Const/INVOKESPECIAL))
-  
-  (def heap (.addLocalVariable method-gen "heap" (new ObjectType "java.util.TreeMap") nil nil))
-  (def index (.getIndex heap))
-  (.setStart heap (.append instruction-list (new ASTORE index)))
+
 
 
 
@@ -98,3 +88,21 @@
   (.dump (.getJavaClass class-gen) "HelloWorld.class")
 
   )
+
+(defn init-heap [method-gen factory] 
+  (let 
+    [instruction-list (new InstructionList)
+     heap (.addLocalVariable method-gen "heap" heap-type nil nil))]
+    (.append instruction-list (.createNew factory heap-type-string))
+    (.append instruction-list InstructionConstants/DUP)
+    (.append instruction-list 
+      (.createInvoke factory
+        heap-type-string
+        "<init>"
+        Type/VOID
+        Type/NO_ARGS
+        Const/INVOKESPECIAL))
+      
+    (def index (.getIndex heap))
+    (.setStart heap (.append instruction-list (new ASTORE index)))
+    [index instruction-list]))
