@@ -12,9 +12,12 @@
         InstructionList
         InstructionFactory
         InstructionConstants
+        ObjectType
         Type
         ArrayType
-        PUSH)
+        PUSH
+        ALOAD
+        ASTORE)
       (org.apache.bcel Const))
     (:gen-class))
 
@@ -29,20 +32,7 @@
   (def constant-pool (.getConstantPool class-gen))
   (def factory (new InstructionFactory class-gen))
 
-  ; (.append instruction-list (new PUSH constant-pool 4711))
-  (.append instruction-list (.createNew factory "java.util.TreeMap"))
-  (.append instruction-list (new PUSH constant-pool "Hello World"))
-  (.append instruction-list 
-    (.createInvoke factory 
-      "java.lang.System"
-      "print"
-      Type/VOID
-      (into-array Type [Type/STRING])
-      Const/INVOKEVIRTUAL
-      ))
-  (.append instruction-list InstructionConstants/RETURN)
-
-  (def method-gen 
+    (def method-gen 
     (new MethodGen 
       (bit-or Const/ACC_STATIC Const/ACC_PUBLIC)
       Type/VOID
@@ -52,6 +42,54 @@
       class-name
       instruction-list
       constant-pool))
+
+  
+  ;(.append instruction-list (new PUSH constant-pool Type/STRING))
+  ;(.append instruction-list (new PUSH constant-pool (new ObjectType "java.lang.Long")))
+  ;(.append instruction-list (new PUSH constant-pool (new ObjectType "java.lang.Integer")))
+  (.append instruction-list (.createNew factory "java.util.TreeMap"))
+  (.append instruction-list InstructionConstants/DUP)
+  (.append instruction-list 
+    (.createInvoke factory
+      "java.util.TreeMap"
+      "<init>"
+      Type/VOID
+      Type/NO_ARGS
+      Const/INVOKESPECIAL))
+  
+  (def heap (.addLocalVariable method-gen "heap" (new ObjectType "java.util.TreeMap") nil nil))
+  (def index (.getIndex heap))
+  (.setStart heap (.append instruction-list (new ASTORE index)))
+
+
+
+  (.append instruction-list 
+    (.createFieldAccess factory
+      "java.lang.System"
+      "out"
+      (new ObjectType "java.io.PrintStream")
+      Const/GETSTATIC))
+  (.append instruction-list (new ALOAD index))
+  (.append instruction-list 
+    (.createInvoke factory
+      "java.util.TreeMap"
+      "toString"
+      Type/STRING
+      Type/NO_ARGS
+      Const/INVOKEVIRTUAL))
+  
+
+  (.append instruction-list 
+    (.createInvoke factory 
+      "java.io.PrintStream"
+      "print"
+      Type/VOID
+      (into-array Type [Type/STRING])
+      Const/INVOKEVIRTUAL
+      ))
+  (.append instruction-list InstructionConstants/RETURN)
+
+
 
   (.setMaxStack method-gen)
   (.addMethod class-gen (.getMethod method-gen))
