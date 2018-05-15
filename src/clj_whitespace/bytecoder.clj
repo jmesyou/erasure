@@ -11,7 +11,7 @@
         ConstantPoolGen
         InstructionList
         InstructionFactory
-        InstructionConstants
+        InstructionConst
         ObjectType
         Type
         ArrayType
@@ -22,34 +22,34 @@
     (:gen-class))
 
 (def heap-type-string "java.util.TreeMap")
-(def heap-type (new ObjectType heap-type))
+(def heap-type (new ObjectType heap-type-string))
+(def init-heap)
+
+(def class-name "HelloWorld")
+
+(def class-gen (new ClassGen nil "java.lang.Object" "HelloWorld.class" (bit-or Const/ACC_PUBLIC Const/ACC_SUPER) nil))
+(def instruction-list (new InstructionList))
+(def constant-pool (.getConstantPool class-gen))
+(def factory (new InstructionFactory class-gen))
+
+(def method-gen 
+  (new MethodGen 
+    (bit-or Const/ACC_STATIC Const/ACC_PUBLIC)
+    Type/VOID
+    (into-array Type [(new ArrayType Type/STRING 1)])
+    (into-array String ["argv"])
+    "main"
+    nil
+    instruction-list
+    constant-pool))
 
 (defn -main [& args]
   "This function is the main class"
-  (def class-name "HelloWorld")
-  (def class-gen (new ClassGen class-name "java.lang.Object" "HelloWorld.class" (bit-or Const/ACC_PUBLIC Const/ACC_SUPER) nil))
+
+
   ;(.setMajor class-gen 52)
   ;(.setMinor class-gen 0)
-  (def instruction-list (new InstructionList))
-  (def constant-pool (.getConstantPool class-gen))
-  (def factory (new InstructionFactory class-gen))
-
-    (def method-gen 
-    (new MethodGen 
-      (bit-or Const/ACC_STATIC Const/ACC_PUBLIC)
-      Type/VOID
-      (into-array Type [(new ArrayType Type/STRING 1)])
-      (into-array String ["argv"])
-      "main"
-      class-name
-      instruction-list
-      constant-pool))
-
   
-  ;(.append instruction-list (new PUSH constant-pool Type/STRING))
-  ;(.append instruction-list (new PUSH constant-pool (new ObjectType "java.lang.Long")))
-  ;(.append instruction-list (new PUSH constant-pool (new ObjectType "java.lang.Integer")))
-
 
 
 
@@ -59,32 +59,15 @@
       "out"
       (new ObjectType "java.io.PrintStream")
       Const/GETSTATIC))
-  (.append instruction-list (new ALOAD index))
-  (.append instruction-list 
-    (.createInvoke factory
-      "java.util.TreeMap"
-      "toString"
-      Type/STRING
-      Type/NO_ARGS
-      Const/INVOKEVIRTUAL))
   
-
-  (.append instruction-list 
-    (.createInvoke factory 
-      "java.io.PrintStream"
-      "print"
-      Type/VOID
-      (into-array Type [Type/STRING])
-      Const/INVOKEVIRTUAL
-      ))
-  (.append instruction-list InstructionConstants/RETURN)
-
+  (let [[idx ilist] (init-heap method-gen factory)]
+    (.append instruction-list ilist))
+  (.append instruction-list InstructionConst/RETURN)
 
 
   (.setMaxStack method-gen)
   (.addMethod class-gen (.getMethod method-gen))
   (.dispose instruction-list)
-  (.addEmptyConstructor class-gen Const/ACC_PUBLIC)
   (.dump (.getJavaClass class-gen) "HelloWorld.class")
 
   )
@@ -92,9 +75,9 @@
 (defn init-heap [method-gen factory] 
   (let 
     [instruction-list (new InstructionList)
-     heap (.addLocalVariable method-gen "heap" heap-type nil nil))]
+     heap (.addLocalVariable method-gen "heap" heap-type nil nil)]
     (.append instruction-list (.createNew factory heap-type-string))
-    (.append instruction-list InstructionConstants/DUP)
+    (.append instruction-list InstructionConst/DUP)
     (.append instruction-list 
       (.createInvoke factory
         heap-type-string
@@ -106,3 +89,54 @@
     (def index (.getIndex heap))
     (.setStart heap (.append instruction-list (new ASTORE index)))
     [index instruction-list]))
+
+(defn heap-store [heap-idx factory]
+  (new InstructionList
+    (into-array Instruction
+      (new ALOAD heap-idx)
+      (.createInvoke factory
+        heap-type-string
+        "put"
+        Type/INT
+        (into-array Type [Type/LONG Type/INT])))))
+
+(defn print-int [] 
+  (.createInvoke factory 
+      "java.io.PrintStream"
+      "print"
+      Type/VOID
+      (into-array Type [Type/STRING])
+      Const/INVOKEVIRTUAL
+      ))
+
+(defn instruction-to-bytecode [const-pool heap-idx instr] 
+  (match [instr]
+    [[:push val]] (new PUSH const-pool val)
+    [:pop]  InstructionConst/POP
+    [:dup]  InstructionConst/DUP
+    [:swap] InstructionConst/SWAP
+    [:add]  InstructionConst/IADD
+    [:sub]  InstructionConst/ISUB
+    [:mul]  InstructionConst/IMUL
+    [:div]  InstructionConst/IDIV
+    [:mod] 
+      (new InstructionList 
+        (into-array Instruction 
+          [InstructionConst/DUP2
+           InstructionConst/DUP2
+           InstructionConst/IDIV
+           InstructionConst/IMUL
+           InstructionConst/ISUB]))
+    [:store] 
+    [:load] 
+    [:printc] 
+    [:printi] 
+    [(:or :readc :readi)] 
+    [[:call l]] 
+    [[:jmp l]] 
+    [[:jz l]] 
+    [[:jn l]] 
+    [:ret] 
+    [:end] 
+    :else (throw (Exception. "[runtime/routine] unexpected or malformed op!")))
+    )
