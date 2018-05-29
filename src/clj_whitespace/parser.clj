@@ -36,15 +36,7 @@
   "This function parses 1 stack op at the head of `stream`.
   "
   (match [stream]
-    [([:s & xs] :seq)] (let [[val rest] (parse-parameter xs)]
-                          (let [[sign & num] val]
-                          (def sign' (if (= "0" sign) 1 (- 1)))
-                          (def num' (Integer/parseInt (apply str num) 2))
-                          (def number (* sign' num'))
-                          (cons [:push number] (parse-tokens rest))))
-    [([:n :s & xs] :seq)] (cons :dup (parse-tokens xs))
-    [([:n :t & xs] :seq)] (cons :swap (parse-tokens xs))
-    [([:n :n & xs] :seq)] (cons :pop (parse-tokens xs))
+
     :else (throw (Exception. "unexpected token encountered while parsing stack op"))))
 
 (defn parse-arithmetic-tokens [stream] 
@@ -127,3 +119,17 @@
        output)))
     
 
+(defn new-parse [stream & {:keys [mode] :or {mode :main}}] 
+  (match [stream]
+    [([:s :s & xs] :seq)] 
+      (let 
+        [[val rest] (parse-parameter xs)
+         [sign & num] val]
+        (def sign' (if (= "0" sign) 1 (- 1)))
+        (def num' (Integer/parseInt (apply str num) 2))
+        (def number (* sign' num'))
+        (cons [:push number] (parse-tokens rest))))
+    [([:s :n :s & xs] :seq)] (cons :dup (parse-tokens xs))
+    [([:s :n :t & xs] :seq)] (cons :swap (parse-tokens xs))
+    [([:s :n :n & xs] :seq)] (cons :pop (parse-tokens xs))
+    ))

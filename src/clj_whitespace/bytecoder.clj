@@ -192,7 +192,7 @@
           [[:jmp l]] [(new GOTO) l]
           [[:jz l]] [(new IFEQ) l]
           [[:jn l]] [(new IFNE) l] 
-          [:ret] 
+          [:ret] []
           [:end] 
           :else (throw (Exception. "[runtime/routine] unexpected or malformed op!")))
     ]
