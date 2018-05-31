@@ -2,8 +2,11 @@
   (:require [clj-whitespace.parser :as parser]
             [clj-whitespace.compiler :as compiler]
             [clj-whitespace.runtime :as runtime]
+            [clj-whitespace.newparser :as newparser]
+            [clj-whitespace.utils :as utils]
             [clojure.string :as string]
-            [clojure.tools.cli :refer [parse-opts]])
+            [clojure.tools.cli :refer [parse-opts]]
+            [instaparse.core :as insta])
   (:gen-class))
 
 (def cli-options

@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.match "0.3.0-alpha5"]
                  [org.clojure/tools.cli "0.3.5"]
+                 [instaparse "1.4.9"]
                  ]
   :aot  [clj-whitespace.core]
   :main clj-whitespace.core

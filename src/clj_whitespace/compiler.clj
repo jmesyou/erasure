@@ -20,7 +20,35 @@
         [([:end] :seq)] [(list) (conj prgm :end) labels (-1)])]
       (recur n-cmds n-prgm n-labels n-pc))))
 
-(defn compile-tokens [cmds] (compile-helper cmds [] {} 0))
+(defn resolve-labels [asm] 
+  (let [labels (atom {})
+        counter (atom 0)
+        out (atom [])
+        f (fn [instr]
+            (match [instr]
+              [[:label l]]
+                (if (contains? @labels l) 
+                  (throw (Exception. "label already present in global table"))
+                  (swap! labels conj {l @counter}))
+              :else 
+                (do 
+                  (swap! out conj instr)
+                  (swap! counter inc)
+                  )))
+        g (fn [instr]
+            (match [instr]
+              [[:call l]] [:call (@labels l)]
+              [[:jmp l]] [:jmp (@labels l)]
+              [[:jz l]] [:jz (@labels l)]
+              :else instr))
+  ]
+    (run! f asm)
+    (for [ary @out] (g ary))))
+
+    
+    
+
+(defn compile-tokens [cmds] (resolve-labels cmds))
 
 (defn compile-program [s & {:keys [mode] :or {mode :string}}]
   (case mode

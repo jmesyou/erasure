@@ -41,6 +41,82 @@
   all subroutines are called."
   (routine prgm '() (transient {}) labels '() 0))
 
+
+(defn new-routine [prgm]
+  (let 
+    [stack (atom '())
+     call-stack (atom '())
+     heap (atom {})
+     prgm-counter (atom 0)
+
+     pop-stack (fn [] (let [x (first @stack)] (swap! stack pop) x))
+
+    binary-op (fn [op] 
+      (let [a (pop-stack) b (pop-stack)]
+          (swap! stack conj (op b a))))
+
+     exec (fn [cmd] 
+      (match [cmd]
+        [[:push v]]
+          (swap! stack conj v)
+        [:dup] 
+          (swap! stack conj (peek @stack))
+        [:swap] 
+          (let 
+            [a (pop-stack)
+             b (pop-stack)]
+            (swap! stack conj a)
+            (swap! stack conj b))
+        [:pop] 
+          (swap! stack pop) 
+        [:pop2]
+          (dotimes [n 2] (swap! stack pop))
+        [:add] 
+          (binary-op +)
+        [:sub]
+          (binary-op -)
+        [:mul] 
+          (binary-op *)
+        [:div] 
+          (binary-op /)
+        [:mod]
+          (binary-op [mod])
+        [:store] 
+          (let [val (pop-stack) addr (pop-stack)] (swap! heap conj addr val))       
+        [:load] 
+          (let [addr (pop-stack)
+                value (get @heap addr 0)] 
+              (swap! stack conj value))
+        [:printc] 
+          (do (print (char (pop-stack))) (flush))
+        [:printi] 
+          (do (print (pop-stack)) (flush))
+        [:readc] 
+          (let [keyint (.read System/in) addr (pop-stack)] 
+            (swap! heap conj addr keyint))
+        [[:call l]] 
+          (do 
+            (swap! call-stack conj prgm-counter)
+            (reset! prgm-counter (- l 1)))
+        [[:jmp l]] 
+          (reset! prgm-counter (- l 1))
+        [[:jz l]] 
+          (if (== (pop-stack) 0) (reset! prgm-counter (- l 1)) nil)
+        [[:jn l]] 
+          (if (< (pop-stack) 0) (reset! prgm-counter (- l 1)) nil)
+        [:ret] 
+          (let [new-counter (first @call-stack)]
+            (swap! call-stack pop)
+            (reset! prgm-counter new-counter))
+        [:end]  (reset! prgm-counter (- 2))
+      ))
+     ]
+    (while (>= @prgm-counter 0) 
+      (exec (prgm @prgm-counter))
+      (swap! prgm-counter inc))
+    (println "")
+    ))
+
 (defn exec [s & {:keys [mode] :or {mode :string}}] 
   (let 
     [[programs labels] (compiler/compile-program s :mode mode)]

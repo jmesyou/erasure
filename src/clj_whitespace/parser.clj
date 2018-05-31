@@ -17,7 +17,7 @@
   Detailed description of the lexer is fully described
   in the report."
   (case mode 
-    :string (replace {"\t" :t, "\n" :n, " " :s} (re-seq #"[ \t\n]" s))
+    :string (apply str (re-seq #"[ \t\n]" s))
     :file (tokenize (slurp s) :mode :string)))
 
 (defn parse-tokens [stream]
@@ -55,7 +55,7 @@
     [([:s :t & xs] :seq)] (cons :sub (parse-tokens xs))
     [([:s :n & xs] :seq)] (cons :mul (parse-tokens xs))
     [([:t :s & xs] :seq)] (cons :div (parse-tokens xs))
-    [([:t :t & xs] :seq)] (cons :mod (parse-tokens xs))
+    [([:t :t & xs] :seq)] (cons :mod (parse-tokens xs)) ; this is the mod operator
     :else (throw (Exception. "unexpected token encountered while parsing arith op"))))
 
 (defn parse-heap-tokens [stream] 
