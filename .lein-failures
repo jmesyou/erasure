@@ -1,1 +1,1 @@
-{}
+{"clj-whitespace.compiler-test" ["parser-test" "parser-test"], "clj-whitespace.core-test" ["hello-world-test" "count-to-ten-test"], "clj-whitespace.parser-test" ["tokenize-test" "tokenize-test" "tokenize-test"]}
