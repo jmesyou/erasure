@@ -44,7 +44,7 @@
         [:mod]
           (binary-op [mod])
         [:store] 
-          (let [val (consume) addr (consume)] (swap! heap conj addr val))       
+          (let [val (consume) addr (consume)] (swap! heap conj {addr val}))       
         [:load] 
           (let [
               addr (consume)
@@ -56,7 +56,9 @@
           (do (print (consume)) (flush))
         [:read-char] 
           (let [keyint (.read System/in) addr (consume)] 
-            (swap! heap conj addr keyint))
+            (swap! heap conj {addr keyint}))
+        [[:location loc]]
+          (reset! state :continue)
         [[:call addr]] 
           (do 
             (swap! call-stack conj (inc pc))
@@ -82,14 +84,16 @@
         [:end]  (reset! state :halt)
       ))
      ]
-    (while (= @state :continue)
+    (loop []
       (do 
         (exec (prgm @pc))
         (case @state 
           :continue 
-            (swap! pc inc) 
+            (do
+              (swap! pc inc)
+              (recur)) 
           :jump
-            (swap! state :continue)
+            (recur)
           :halt
             (println ""))))))
 

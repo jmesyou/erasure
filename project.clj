@@ -1,4 +1,4 @@
-(defproject clj-whitespace "1.0"
+(defproject clj-whitespace "2.0"
   :description "A Whitespace compiler in Clojure"
   :url "https://github.com/jacksyou/clj-whitespace"
   :license {:name "MIT Public License"
