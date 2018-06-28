@@ -1,11 +1,16 @@
-(ns clj-whitespace.interpreter
+(ns clj-whitespace.stackmachine
   (:require [clojure.core.match :refer [match]])
   (:gen-class))
 
 
-(defn interpret [prgm]
+(defn interpret 
+  "This function initiates a clean state for the stack machine and 
+  executes the program denoted by `prgm`, a vector of instruction keywords and
+  their corresponding arguments."
+  [prgm]
   (let 
     [
+    ;; machine state variables
     stack (atom '())
     call-stack (atom '())
     heap (atom {})
@@ -13,12 +18,17 @@
     state (atom :continue)
     jump-table (atom {})
 
+    ;; custom pop and return function
     consume (fn [] (let [top-item (peek @stack)] (swap! stack pop) top-item))
 
+    ;; FIXME: this should be a macro
+    ;; generic binary operation function
     binary-op (fn [op] 
       (let [a (consume) b (consume)]
           (swap! stack conj (op b a))))
-
+    
+    ;; execute (1) instruction with side effects on the 
+    ;; state of the machine.
     exec (fn [cmd] 
       (match [cmd]
         [[:push val]]
@@ -57,20 +67,26 @@
         [:read-char] 
           (let [keyint (.read System/in) addr (consume)] 
             (swap! heap conj {addr keyint}))
+        ;; TODO: add read-int
         [[:location loc]]
           (reset! state :continue)
         [[:call addr]] 
           (do 
             (swap! call-stack conj (inc pc))
             (reset! pc addr))
+        ;; generic jump instruction
         [[:jump condition label]] 
           (let 
+            ;; decide if a jump should occur
             [b (case condition
               :eq (if (== (consume) 0) true false)
               :ne (if (< (consume) 0) true false)
               :un true)]
             (when b 
               (reset! state :jump)
+              ;; if this is the 1st time jumping to a label,
+              ;; cache the corresponding address in the jump table, otherwise fetch 
+              ;; the address from the jump table
               (if (contains? @jump-table label)
                 (reset! pc (@jump-table label))
                 (let
@@ -84,6 +100,7 @@
         [:end]  (reset! state :halt)
       ))
      ]
+    ;; infinite loop breaking on the halt state.
     (loop []
       (do 
         (exec (prgm @pc))

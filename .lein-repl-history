@@ -62,3 +62,8 @@ f 3
 (interpreter/interpret (parser/parse (slurp "resources/count.c")))
 (interpreter/interpret (parser/parse (slurp "resources/helloworld.ws")))
 (parser/parse (slurp "resources/helloworld.ws"))
+(interpreter/interpret (parser/parse (slurp "resources/helloworld.ws")))
+(parser/parse (slurp "resources/helloworld.ws"))
+(interpreter/interpret (parser/parse (slurp "resources/helloworld.ws")))
+(interpreter/interpret (parser/parse (slurp "resources/fib.ws")))
+(parser/parse (slurp "resources/fib.ws"))
