@@ -1,6 +1,6 @@
-(ns clj-whitespace.core
-  (:require [clj-whitespace.parser :as parser]
-            [clj-whitespace.stackmachine :as stack-machine]
+(ns erasure.core
+  (:require [erasure.parser :as parser]
+            [erasure.runtime :as runtime]
             [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
             [instaparse.core :as insta]
@@ -45,5 +45,5 @@
         (do (println exit-message) 
             (System/exit (if ok? 0 1)))
         (case action
-          :generate-intermediate (clojure.pprint/pprint(parser/parse (slurp file)))
-          :execute-source (stack-machine/interpret (parser/parse (slurp file)))))))
+          :generate-intermediate (clojure.pprint/pprint (parser/parse (slurp file)))
+          :execute-source (runtime/interpret (parser/parse (slurp file)))))))

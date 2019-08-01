@@ -1,4 +1,4 @@
-(ns clj-whitespace.core-test
+(ns erasure.core-test
   (:require [clojure.test :refer :all]
             [clj-whitespace.core :refer :all]))
 

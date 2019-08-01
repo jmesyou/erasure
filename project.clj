@@ -1,4 +1,4 @@
-(defproject clj-whitespace "2.0"
+(defproject erasure "2.0"
   :description "A Whitespace compiler in Clojure"
   :url "https://github.com/jacksyou/clj-whitespace"
   :license {:name "MIT Public License"
@@ -8,8 +8,8 @@
                  [org.clojure/tools.cli "0.3.5"]
                  [instaparse "1.4.9"]
                  ]
-  :aot  [clj-whitespace.core]
-  :main clj-whitespace.core
+  :aot  [erasure.core]
+  :main erasure.core
   :java-source-paths ["src/" "test/"]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

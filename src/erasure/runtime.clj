@@ -1,4 +1,4 @@
-(ns clj-whitespace.stackmachine
+(ns erasure.runtime
   (:require [clojure.core.match :refer [match]])
   (:gen-class))
 
