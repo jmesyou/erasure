@@ -21,7 +21,7 @@ $ lein compile
 $ lein uberjar
 ```
 ### Standalone Jar
-Download from https://github.com/JacksYou/clj-whitespace/blob/master/target/uberjar/clj-whitespace-1.0-standalone.jar.
+Download from https://github.com/JacksYou/clj-whitespace/blob/master/target/uberjar/erasure-1.0-standalone.jar.
 
 ## Usage
 
