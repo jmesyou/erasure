@@ -1,9 +1,9 @@
-# Clojure Whitespace Compiler
+# erasure: A Whitespace Interpreter
 
-`clj-whitespace` is a Whitespace compiler and runtime which produces an intermediate code representation in 
+`erasure` is a Whitespace interpreter and runtime which can also produce an intermediate code representation in 
 Clojure. 
 
-This compiler was built for the term project of **COMPSCI 4TB3** at _McMaster University_
+This interpreter was built for the term project of **COMPSCI 4TB3** at _McMaster University_
 ## Installation
 
 ### Dependencies
@@ -26,7 +26,7 @@ Download from https://github.com/JacksYou/clj-whitespace/blob/master/target/uber
 ## Usage
 
 ```
-$ java -jar clj-whitespace-1.0-standalone.jar [options] file
+$ java -jar erasure-1.0-standalone.jar [options] file
 ```
 
 ## Options
@@ -46,14 +46,14 @@ for example, to run `count.c`:
 from standalone jar:
 
 ```
-$ java -jar target/uberjar/clj-whitespace-1.0-standalone.jar resources/count.c
+$ java -jar target/uberjar/erasure-1.0-standalone.jar resources/count.c
 ```
 
 from lein:
 
 ```
 $ lein repl
-clj-whitespace.core=> (-main "resources/count.c")
+erasure.core=> (-main "resources/count.c")
 ```
 
 ## License
